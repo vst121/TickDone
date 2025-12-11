@@ -6,7 +6,7 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration config)
     {
-        var provider = config["Database:Provider"];
+        var provider = config["Database:Provider"] ?? "Sqlite";
 
         if (provider == "SqlServer")
         {

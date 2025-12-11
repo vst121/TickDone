@@ -11,7 +11,7 @@ public static class ToDoEndpoints
             var todos = await db.ToDos.ToListAsync();
             return Results.Ok(todos);
         })
-.WithName("GetToDos");
+        .WithName("GetToDos");
 
         group.MapGet("/{id}", async (int id, AppDbContext db) =>
         {
