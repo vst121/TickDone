@@ -15,30 +15,28 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-var todos = new[]
+app.MapGet("/todos", async (AppDbContext db) =>
 {
-    "Task1 for learning React", "Task2 for learning German", "Task3 for going to gym", "Task4 for learning AI", "Task5 for washing dishes", "Task6 for cleaning the house", "Task7 for watching TV"
-};
-
-app.MapGet("/todos", () =>
-{
-    var todo = Enumerable.Range(1, 5).Select(index =>
-        new ToDo
-        (
-            index.ToString(),
-            todos[Random.Shared.Next(todos.Length)],
-            DateTime.Now.AddDays(index),
-            Random.Shared.Next(0, 1) == 1
-        ))
-        .ToArray();
-
-    return todo;
+    var todos = await db.ToDos.ToListAsync();
+    return Results.Ok(todos);
 })
-.WithName("ToDos");
+.WithName("GetTodos");
+
+app.MapPost("/todos", async (CreateToDoRequest request, AppDbContext db) =>
+{
+    var todo = new ToDo
+    {
+        Id = 1,
+        TaskName = request.TaskName,
+        Deadline = request.Deadline,
+        Done = false
+    };
+
+    db.ToDos.Add(todo);
+    await db.SaveChangesAsync();
+
+    return Results.Created($"/todos/{todo.Id}", todo);
+})
+.WithName("CreateTodo");
 
 app.Run();
-
-internal record ToDo(string Id, string Text, DateTime Deadline, bool Done)
-{
-    //public string Id => Guid.NewGuid().ToString();
-}
