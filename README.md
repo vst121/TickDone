@@ -23,9 +23,9 @@ Lightweight TODO API solution built with .NET 10.
    - To change provider set `Database:Provider` to `Sqlite` or `SqlServer` and update the matching connection string.
 
 3. Database migrations (if needed)
-   - Add/Apply migrations from the solution root:
-     - `dotnet ef migrations add Initial -p TickDone.Infrastructure -s TickDone.API`
-     - `dotnet ef database update -p TickDone.Infrastructure -s TickDone.API`
+   - Add/Apply migrations from the solution root (To separate the SQLite from SqlServer migrations pass the output directorty too):
+     - `dotnet ef migrations add InitialSqlite --project TickDone.Infrastructure --startup-project TickDone.API --output-dir Migrations/Sqlite`
+     - `dotnet ef database update --project TickDone.Infrastructure --startup-project TickDone.API`
    - If using integration tests that rely on `WebApplicationFactory`, consider switching the API to an in-memory provider during tests.
 
 4. Run tests
