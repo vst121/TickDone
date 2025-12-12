@@ -1,8 +1,4 @@
-﻿using TickDone.API.Requests;
-using TickDone.Core.Entities;
-using TickDone.Infrastructure;
-
-namespace TickDone.Tests;
+﻿namespace TickDone.Tests;
 
 public class ToDoApiTests : IClassFixture<CustomWebApplicationFactory>, IDisposable
 {

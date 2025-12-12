@@ -10,3 +10,4 @@ global using Xunit;
 
 global using TickDone.Infrastructure;
 global using TickDone.API.Requests;
+global using TickDone.Core.Entities;
