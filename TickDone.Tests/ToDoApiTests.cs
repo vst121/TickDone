@@ -10,7 +10,6 @@ public class ToDoApiTests : IClassFixture<CustomWebApplicationFactory>, IDisposa
         _factory = factory;
         _client = factory.CreateClient();
 
-        // Ensure clean state before each test
         using var scope = factory.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         db.Database.EnsureDeleted();
@@ -62,13 +61,11 @@ public class ToDoApiTests : IClassFixture<CustomWebApplicationFactory>, IDisposa
     [Fact]
     public async Task GetById_AfterCreate_ReturnsCorrectToDo()
     {
-        // First create
         var createResponse = await _client.PostAsJsonAsync("/todos", new CreateToDoRequest("Learn Minimal APIs testing", new DateTime(2025, 12, 25)));
 
         var created = await createResponse.Content.ReadFromJsonAsync<ToDo>();
         var id = created!.Id;
 
-        // Then get by id
         var getResponse = await _client.GetAsync($"/todos/{id}");
         getResponse.EnsureSuccessStatusCode();
 
@@ -87,11 +84,9 @@ public class ToDoApiTests : IClassFixture<CustomWebApplicationFactory>, IDisposa
     [Fact]
     public async Task UpdateToDo_MarkAsDone_Returns200AndUpdatedEntity()
     {
-        // Create
         var createResp = await _client.PostAsJsonAsync("/todos", new CreateToDoRequest("Write integration tests", DateTime.Today.AddDays(7)));
         var todo = await createResp.Content.ReadFromJsonAsync<ToDo>();
 
-        // Update - mark as done
         var updated = todo?.Done == true;
         var putResponse = await _client.PutAsJsonAsync($"/todos/{todo?.Id}", updated);
 
@@ -113,15 +108,12 @@ public class ToDoApiTests : IClassFixture<CustomWebApplicationFactory>, IDisposa
     [Fact]
     public async Task DeleteToDo_Existing_Returns204AndGoneAfterward()
     {
-        // Create
         var createResp = await _client.PostAsJsonAsync("/todos", new CreateToDoRequest("Temporary todo to delete", DateTime.Today));
         var todo = await createResp.Content.ReadFromJsonAsync<ToDo>();
 
-        // Delete
         var deleteResponse = await _client.DeleteAsync($"/todos/{todo!.Id}");
         Assert.Equal(HttpStatusCode.NoContent, deleteResponse.StatusCode);
 
-        // Verify gone
         var getAfterDelete = await _client.GetAsync($"/todos/{todo.Id}");
         Assert.Equal(HttpStatusCode.NotFound, getAfterDelete.StatusCode);
     }
