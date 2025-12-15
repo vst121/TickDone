@@ -8,9 +8,8 @@ public static class ToDoEndpoints
 
         group.MapGet("/", async (AppDbContext db) =>
         {
-            Console.WriteLine("-->get todos"); // Only for demo purposes
+            Console.WriteLine("-->get todos"); // Only for test purposes
             var todos = await db.ToDos.ToListAsync();
-            Console.WriteLine($"-->todos count {todos.Count}"); // Only for demo purposes
             return Results.Ok(todos);
         })
         .WithName("GetToDos");
